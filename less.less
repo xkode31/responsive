@@ -1,0 +1,304 @@
+// ------------------------------------------  
+// MEDIA QUERIES
+// ------------------------------------------*/
+
+// The following are defaults for media queries. Additional custom measurements may be needed for ceertain elements, although non-content-based breakpoints are quite convenient...
+
+// P = Portrait orientation
+// L = Landscape orientation
+
+// Proportional media queries using ems
+// That is browser base font size: ex. - 16px / 14pt / 1em
+// http://blog.cloudfour.com/the-ems-have-it-proportional-media-queries-ftw/
+@baseFontSize: 16;
+@bfs: 16;							// shorthand duplicate
+
+// Breakpoints
+// These are em values based off of pixel values
+@phoneValueMax: ( 599 / @bfs ) + 0em;
+@tabletPValue: ( 768 / @bfs ) + 0em;;
+@desktopValue: ( 768 / @bfs ) + 0em;;
+@desktopWideValue: ( 960 / @bfs ) + 0em;
+
+// Modified variables
+// These are derrivative variables so that breakpoints don't overlap.
+// That is, the widest tablet width isn't the same as the smallest desktop width.
+@onePixel: 0.063em;
+@desktopValueMinusOne: @desktopValue - @onePixel;
+@desktopWideValueMinusOne: @desktopWideValue - @onePixel;
+@phoneValueMin: ( 320 / @bfs ) + 0em;;
+@phoneValuePlusOne: (@phoneValueMin + @onePixel);
+@tabletPValueMinusOne: @tabletPValue - @onePixel;
+@tabletPValuePlusOne: @tabletPValue + @onePixel;
+@tabletValueMin: @phoneValueMax + @onePixel;
+
+// Actual queries variables that can be called
+@phone: ~"screen and (max-width: @{phoneValueMax} )";
+@phoneP: ~"screen and (max-width: @{phoneValueMin}";
+@phoneL: ~"screen and (min-width: @{phoneValuePlusOne}) and (max-width: @{phoneValueMax}px)";
+
+@phoneAndTablet: ~"screen and (max-width: @{tabletPValue})";
+@tablet: ~"screen and (min-width: @{tabletValueMin}) and (max-width: @{desktopValueMinusOne})";
+@tabletUp: ~"screen and (min-width: @{tabletValueMin})";
+@tabletP: ~"screen and (min-width: @{tabletValueMin}) and (max-width: @{tabletPValue})";
+@tabletPUp: ~"screen and (min-width: @{tabletPValue})";
+@tabletPDown: ~"screen and (max-width: @{tabletPValueMinusOne})";
+@tabletL: ~"screen and (min-width: @{tabletPValuePlusOne}) and (max-width: 1024px)";
+
+@desktop: ~"screen and (min-width: @{desktopValue})";
+@notDesktop: ~"screen and (max-width: @{desktopValueMinusOne})";
+@desktopWide: ~"screen and (min-width: @{desktopWideValue})";
+@notDesktopWide: ~"screen and (max-width: @{@desktopWideValueMinusOne})";
+
+/* EXAMPLE USE:
+
+ GOOD using variable:
+ @media all and (max-width: @tabletWidth) {
+   body {
+     
+   }
+ }
+ 
+ BETTER with embedded media queries:
+ body {
+ 	@media @tablet {
+ 		background: #000;
+ 	}
+ }
+ 
+Better is subjective. Embedded media queries do increase file size, but we are probably talking about 20 kilobytes per site. With compression, I would prefer a more readable, more object oriented (everything related to an HTML node is next to each other). If the CSS got too large, I would recommend breaking it into separate files and loading it in modules.
+*/
+
+
+
+
+
+
+//====================================
+//              FOR LOOP             =
+//====================================
+.for(@i, @n) {
+  .-each(@i)
+}
+
+.for(@n) when (isnumber(@n)) {
+  .for(1, @n)
+}
+
+.for(@i, @n) when not (@i =@n) {
+  .for((@i + (@n - @i) / abs(@n - @i)), @n);
+}
+//--------  End of for loop  ---------//
+
+
+
+//=========================================
+//              FOR EACH LOOP             =
+//=========================================
+.for(@array) when (default()) {
+  .for-impl_(length(@array))
+}
+
+.for-impl_(@i) when (@i > 1) {
+  .for-impl_((@i - 1))
+}
+
+.for-impl_(@i) when (@i > 0) {
+  .-each(extract(@array, @i))
+}
+//--------  End of for each loop  ---------//
+
+
+
+
+
+
+///////////////
+// variables //
+///////////////
+@screen-xs: 0;
+@screen-sm: 480px;
+@screen-md: 768px;
+@screen-lg: 992px;
+@screen-xl: 1600px;
+
+
+
+
+@values-array: 0, 5, 10, 15, 20, 30, 40, 50;
+
+
+
+// global
+@media (min-width: @screen-xs) {
+  .make-space(@prefix: xs);
+}
+// mobile
+@media (min-width: @screen-sm) {
+  .make-space(@prefix: sm);
+}
+// tablet
+@media (min-width: @screen-md) {
+  .make-space(@prefix: md);
+}
+// desktop
+@media (min-width: @screen-lg) {
+  .make-space(@prefix: lg);
+}
+// large screens
+@media (min-width: @screen-xl) {
+  .make-space(@prefix: xl);
+}
+
+
+
+
+
+
+// init functions
+.make-space(@prefix) {
+  .for(@values-array);
+  .-each(@value) {
+    .@{prefix}-p-@{value}   { padding:        ~"@{value}px"; }
+    .@{prefix}-pt-@{value}  { padding-top:    ~"@{value}px"; }
+    .@{prefix}-pl-@{value}  { padding-left:   ~"@{value}px"; }
+    .@{prefix}-pr-@{value}  { padding-right:  ~"@{value}px"; }
+    .@{prefix}-pb-@{value}  { padding-bottom: ~"@{value}px"; }
+    .@{prefix}-m-@{value}   { margin:         ~"@{value}px"; }
+    .@{prefix}-mt-@{value}  { margin-top:     ~"@{value}px"; }
+    .@{prefix}-ml-@{value}  { margin-left:    ~"@{value}px"; }
+    .@{prefix}-mr-@{value}  { margin-right:   ~"@{value}px"; }
+    .@{prefix}-mb-@{value}  { margin-bottom:  ~"@{value}px"; }
+
+  }
+}
+
+
+/*******************************************************************/
+
+//
+// Settings
+//
+
+@767down: ~"only screen and (max-width: 767px)";
+@320up: ~"only screen and (min-width: 320px)";
+@480up: ~"only screen and (min-width: 480px)";
+@768up: ~"only screen and (min-width: 768px)";
+@992up: ~"only screen and (min-width: 992px)";
+@1200up: ~"only screen and (min-width: 1200px)";
+@1320up: ~"only screen and (min-width: 1320px)";
+
+@2x: ~"only screen and (min-device-pixel-ratio: 1.3)",
+     ~"only screen and (-webkit-min-device-pixel-ratio: 1.3)",
+     ~"only screen and (-o-min-device-pixel-ratio: 13/10)",
+     ~"only screen and (min-resolution: 120dpi)";
+
+
+//
+// Variables
+//
+
+// Standard
+
+.767down() {}
+.320up() {}
+.480up() {}
+.768up() {}
+.992up() {}
+.1200up() {}
+.1320up() {}
+
+// Retina
+
+.all2x() {}
+.767down2x() {}
+.320up2x() {}
+.480up2x() {}
+.768up2x() {}
+.992up2x() {}
+.1200up2x() {}
+.1320up2x() {}
+
+
+//
+// Output
+//
+
+// Legacy
+
+.legacyStyles() {
+    .320up;
+    .480up;
+    .768up;
+    .992up;
+}
+
+// Modern
+
+.modernStyles() {
+
+    // Standard
+
+    @media @767down {
+        .767down;
+    }
+
+    @media @320up {
+        .320up;
+    }
+
+    @media @480up {
+        .480up;
+    }
+
+    @media @768up {
+        .768up;
+    }
+
+    @media @992up {
+        .992up;
+    }
+
+    @media @1200up {
+        .1200up;
+    }
+
+    @media @1320up {
+        .1320up;
+    }
+
+    // Retina
+
+    @media @2x {
+        .all2x;
+    }
+
+    @media @2x, @767down {
+        .767down2x;
+    }
+
+    @media @2x, @320up {
+        .320up2x;
+    }
+
+    @media @2x, @480up {
+        .480up2x;
+    }
+
+    @media @2x, @768up {
+        .768up2x;
+    }
+
+    @media @2x, @992up {
+        .992up2x;
+    }
+
+    @media @2x, @1200up {
+        .1200up2x;
+    }
+
+    @media @2x, @1320up {
+        .1320up2x;
+    }
+
+}
